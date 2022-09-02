@@ -68,7 +68,7 @@ const OpenRoundCard: React.FC<React.PropsWithChildren<OpenRoundCardProps>> = ({
   const bearPs = useBearPs()
   const bullPs = useBullPs()
  const PROGRAM_ID_IDL = new PublicKey(
-  "4p3SG3CTzDdKBhm4mUBxMqX52fZZiPUxqvHBpZxbsww7"
+  "5nLVxh7VWQrXASHjsV6SCCA2xwB7R5GDANsKWK3uQ5Xd"
 )
 let connection = new Connection("https://solana--devnet.datahub.figment.io/apikey/fff8d9138bc9e233a2c1a5d4f777e6ad");
 
@@ -131,6 +131,7 @@ setFirst(false)
         let tbears = []
         for (var pda of pdas){
           let wha = await Predictions.fetch(connection, pda.pubkey)
+          console.log(wha)
           tbulls.push({round: wha.epoch, which: "BNB", wat: wha.bull})
           tbears.push({round: wha.epoch, which: "BNB", wat: wha.bear})
 
@@ -138,6 +139,8 @@ setFirst(false)
         if (tbulls.length > 0 && tbears.length > 0){
           dispatch(setBullPs(tbulls))
           dispatch(setBearPs(tbears))
+            setBear('% ' + tbears[tbears.length-1].wat.toString() + ' winrate')
+            setBull('% ' + tbulls[tbulls.length-1].wat.toString() + ' winrate')
           console.log(tbears)
         }
 

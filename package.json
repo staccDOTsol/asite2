@@ -9,8 +9,8 @@
   "scripts": {
     "analyze": "ANALYZE=true yarn build",
     "dev": "next dev",
-    "build": "next build",
-    "start": "bash stuff.sh",
+    "build": "echo ha",
+    "start": "next dev",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:config": "jest src/config/__tests__/ --testPathIgnorePatterns",

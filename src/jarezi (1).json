@@ -1,0 +1,99 @@
+{
+  "version": "0.1.0",
+  "name": "jarezi",
+  "instructions": [
+    {
+      "name": "update",
+      "accounts": [
+        {
+          "name": "predictions",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "auth",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bull",
+          "type": "u8"
+        },
+        {
+          "name": "bear",
+          "type": "u8"
+        },
+        {
+          "name": "epoch",
+          "type": "u32"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Predictions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bull",
+            "type": "u8"
+          },
+          {
+            "name": "bear",
+            "type": "u8"
+          },
+          {
+            "name": "kbear",
+            "type": "u8"
+          },
+          {
+            "name": "kbull",
+            "type": "u8"
+          },
+          {
+            "name": "epoch",
+            "type": "u32"
+          },
+          {
+            "name": "auth",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "InitializeFanoutArgs2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bulls",
+            "type": "u8"
+          },
+          {
+            "name": "bears",
+            "type": "u8"
+          },
+          {
+            "name": "epochs",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "5nLVxh7VWQrXASHjsV6SCCA2xwB7R5GDANsKWK3uQ5Xd"
+  }
+}

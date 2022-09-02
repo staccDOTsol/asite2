@@ -88,7 +88,7 @@ export class Predictions {
 
   static decode(data: Buffer): Predictions {
     if (!data.slice(0, 8).equals(Predictions.discriminator)) {
-     // throw new Error("invalid account discriminator")
+      throw new Error("invalid account discriminator")
     }
 
     const dec = Predictions.layout.decode(data.slice(8))

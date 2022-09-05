@@ -1,0 +1,3 @@
+[submodule "backend-for-devnet-backend"]
+	path = backend-for-devnet-backend
+	url = https://github.com/staccDOTsol/backend-for-devnet-backend

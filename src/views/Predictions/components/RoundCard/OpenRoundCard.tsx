@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useWeb3React } from '@pancakeswap/wagmi'
 import { Connection, PublicKey, Keypair, Account } from '@solana/web3.js'
-import { AnchorProvider, Program } from '@project-serum/anchor' 
 import Moralis from 'moralis'
+const PromisePool = require("@supercharge/promise-pool").default;
+
 import {
   Card,
   CardBody,
@@ -62,8 +63,8 @@ const OpenRoundCard: React.FC<React.PropsWithChildren<OpenRoundCardProps>> = ({
   const { theme } = useTheme()
   const { toastSuccess } = useToast()
   const { account } = useWeb3React()
-  const [bear, setBear] = useState("")
-  const [bull, setBull] = useState("")
+  const [bear, setBear] = useState("wait ~10s...")
+  const [bull, setBull] = useState("wait ~10s...")
   
   const bearPs = useBearPs()
   const bullPs = useBullPs()
@@ -71,7 +72,7 @@ const OpenRoundCard: React.FC<React.PropsWithChildren<OpenRoundCardProps>> = ({
   "5nLVxh7VWQrXASHjsV6SCCA2xwB7R5GDANsKWK3uQ5Xd"
 )
 let connection = new Connection("https://solana--devnet.datahub.figment.io/apikey/fff8d9138bc9e233a2c1a5d4f777e6ad");
-
+const [ baddies, setBaddies ] = useState([])
   const dispatch = useLocalDispatch()
   const { token, displayedDecimals } = useConfig()
   const { lockTimestamp } = round ?? { lockTimestamp: null }
@@ -129,18 +130,36 @@ setFirst(false)
         console.log(pdas)
         let tbulls = []
         let tbears = []
-        for (var pda of pdas){
+        await PromisePool.withConcurrency(pdas.length)
+    .for(pdas)
+    // @ts-ignore
+    .handleError(async (err, asset) => {
+      console.error(`\nError uploading or whatever`, err.message);
+      console.log(err);
+    })
+    // @ts-ignore
+    .process(async (pda) => {
+      if (!baddies.includes(pda)){
           let wha = await Predictions.fetch(connection, pda.pubkey)
+          if (wha.epoch > round.epoch - 7 && wha.epoch <= round.epoch){
           console.log(wha)
           tbulls.push({round: wha.epoch, which: "BNB", wat: wha.bull})
           tbears.push({round: wha.epoch, which: "BNB", wat: wha.bear})
+          if (wha.epoch == round.epoch){
 
+          setBear('% ' + tbears[tbears.length-1].wat.toString() + ' winrate')
+          setBull('% ' + tbulls[tbulls.length-1].wat.toString() + ' winrate')
+          }
+          }
+          else {
+            setBaddies([...baddies, pda])
+          }
         }
-        if (tbulls.length > 0 && tbears.length > 0){
+        })
+        setTimeout(async function(){
+        if (tbulls.length > 1 && tbears.length > 1){
           dispatch(setBullPs(tbulls))
           dispatch(setBearPs(tbears))
-            setBear('% ' + tbears[tbears.length-1].wat.toString() + ' winrate')
-            setBull('% ' + tbulls[tbulls.length-1].wat.toString() + ' winrate')
           console.log(tbears)
         }
 
@@ -154,33 +173,7 @@ setFirst(false)
         query.equalTo("confirmed", true)
         const fetchLeaderboard = await query.find()
         console.log(fetchLeaderboard)
-if (account == '0x4BbB2b752f94D17748B50c17527146b789111145' ) {
-  let bt = 0
-  let bullt = 0
-  let c1 = 0
-  let c2 = 0
-  for (const b of stuffbear) {
-    bt += b
-    c1++
-  }
-  for (const b of stuff) {
-    bullt += b
-    c2++
-  }
-  let avg1 = bt / c1
-  let avg2 = bullt / c2
-  avg1 = Math.round(avg1 * 10000) / 10000
-  avg2 = Math.round(avg2 * 10000) / 10000
-  console.log('bullish? count: ' + c2.toString() + ', avg: ' + avg2.toString())
-  console.log('bearish? count: ' + c1.toString() + ', avg: ' + avg1.toString())
-  if (avg2 !== undefined && !isNaN(avg2)) {
-    setBullPred('% ' + avg2.toString() + ' winrate')
-  }
-  if (avg1 !== undefined && !isNaN(avg1)) {
-    setBearPred('% ' + avg1.toString() + ' winrate')
-  }
 
-}
         for (var tx of fetchLeaderboard) {
           if (tx.get('from_address') == address && tx.get('value') === "100000000000000000") {
             console.log(tx.get('to_address'))
@@ -209,69 +202,27 @@ if (account == '0x4BbB2b752f94D17748B50c17527146b789111145' ) {
             console.log('bullish? count: ' + c1.toString() + ', avg: ' + avg2.toString())
             console.log('bearish? count: ' + c2.toString() + ', avg: ' + avg1.toString())
             if (avg2 !== undefined) {
-              setBullPred('% ' + avg2.toString() + ' winrate')
+             // setBullPred('% ' + avg2.toString() + ' winrate')
             }
             if (avg1 !== undefined) {
-              setBearPred('% ' + avg1.toString() + ' winrate')
+            //  setBearPred('% ' + avg1.toString() + ' winrate')
             }
 
             break
           }
         }
+        }, 9000)
       } catch (err) {
         console.log(err)
       }
     })
   }
-  }, [lockTimestamp ? lockTimestamp - getNow(): 0])
+  }, [lockTimestamp ? lockTimestamp - getNow() % 3 == 0: 0])
 
 if (bearPs != undefined){
-      for (var abc of bearPs){
-        if (abc != undefined){
-          if (abc.round == round.epoch && token.symbol == abc.which){
-            if (bear == ""){
-            setBear(abc.wat.toString() + "% prediction")
-            }
-          }
-        
-        }
-      }
-      for (var abc of bullPs){
-        if (abc != undefined){
-
-          if (abc.round == round.epoch&& token.symbol == abc.which){
-            if (bull == ""){
-            setBull(abc.wat.toString() + "% prediction")
-            }
-        }
-      }
-      }
-    }
-
-if (bearPs != undefined){
-  for (var abc of bearPs){
-    if (abc != undefined){
-      if (abc.round == round.epoch && token.symbol == abc.which){
-        if (bear == ""){
-        setBear(abc.wat.toString() + "% prediction")
-        }
-      }
     
     }
-  }
-  console.log(bullPs.length)
-  for (var abc of bullPs){
-    if (abc != undefined){
-console.log(abc.round)
-console.log(abc.which)
-      if (abc.round == round.epoch&& token.symbol == abc.which){
-        if (bull == ""){
-        setBull(abc.wat.toString() + "% prediction")
-        }
-    }
-  }
-  }
-}
+
   useEffect(() => {
     const secondsToLock = lockTimestamp ? lockTimestamp - getNow() : 0
 

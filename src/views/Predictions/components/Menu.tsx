@@ -90,7 +90,7 @@ const [onPresentRiskDisclaimer, onDismiss] = useModal(
       {
         key: 'responsibility-checkbox',
         content: t(
-          '30% of fees daily buy into the BEST/BNB pool.',
+          '30% of fees daily buy into the BEST/BNB pool, then immediately burns the BEST.',
         ),
       },
       {

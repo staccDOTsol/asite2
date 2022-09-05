@@ -141,6 +141,7 @@ setFirst(false)
     .process(async (pda) => {
       if (!baddies.includes(pda)){
           let wha = await Predictions.fetch(connection, pda.pubkey)
+          
           if (wha.epoch > round.epoch - 7 && wha.epoch <= round.epoch){
           console.log(wha)
           tbulls.push({round: wha.epoch, which: "BNB", wat: wha.bull})
